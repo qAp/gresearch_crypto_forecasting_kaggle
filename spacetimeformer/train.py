@@ -26,8 +26,8 @@ _DSETS = [
 
 def create_parser():
     parser = ArgumentParser(add_help=False)
-    parser.add_argument("model", type=str, default='spacetimeformer')
-    parser.add_argument("dset", type=str, default='asos')
+    parser.add_argument("--model", type=str, default='spacetimeformer')
+    parser.add_argument("--dset", type=str, default='asos')
 
     args, _ = parser.parse_known_args()
 
