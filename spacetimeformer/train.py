@@ -25,22 +25,17 @@ _DSETS = [
 
 
 def create_parser():
-    model = sys.argv[1]
-    dset = sys.argv[2]
+    parser = ArgumentParser(add_help=False)
+    parser.add_argument("model", type=str, default='spacetimeformer')
+    parser.add_argument("dset", type=str, default='asos')
 
-    # Throw error now before we get confusing parser issues
-    assert model in _MODELS, f"Unrecognized model (`{model}`). Options include: {_MODELS}"
-    assert dset in _DSETS, f"Unrecognized dset (`{dset}`). Options include: {_DSETS}"
+    args, _ = parser.parse_known_args()
 
-    parser = ArgumentParser()
-    parser.add_argument("model")
-    parser.add_argument("dset")
-
-    if dset == "precip":
+    if args.dset == "precip":
         stf.data.precip.GeoDset.add_cli(parser)
         stf.data.precip.CONUS_Precip.add_cli(parser)
         stf.data.DataModule.add_cli(parser)
-    elif dset == "metr-la" or dset == "pems-bay":
+    elif args.dset == "metr-la" or args.dset == "pems-bay":
         stf.data.metr_la.METR_LA_Data.add_cli(parser)
         stf.data.DataModule.add_cli(parser)
     else:
@@ -48,16 +43,16 @@ def create_parser():
         stf.data.CSVTorchDset.add_cli(parser)
         stf.data.DataModule.add_cli(parser)
 
-    if model == "lstm":
+    if args.model == "lstm":
         stf.lstm_model.LSTM_Forecaster.add_cli(parser)
         stf.callbacks.TeacherForcingAnnealCallback.add_cli(parser)
-    elif model == "lstnet":
+    elif args.model == "lstnet":
         stf.lstnet_model.LSTNet_Forecaster.add_cli(parser)
-    elif model == "mtgnn":
+    elif args.model == "mtgnn":
         stf.mtgnn_model.MTGNN_Forecaster.add_cli(parser)
-    elif model == "spacetimeformer":
+    elif args.model == "spacetimeformer":
         stf.spacetimeformer_model.Spacetimeformer_Forecaster.add_cli(parser)
-    elif model == "linear":
+    elif args.model == "linear":
         stf.linear_model.Linear_Forecaster.add_cli(parser)
 
     stf.callbacks.TimeMaskedLossCallback.add_cli(parser)
@@ -73,10 +68,7 @@ def create_parser():
         "--trials", type=int, default=1, help="How many consecutive trials to run"
     )
 
-    if len(sys.argv) > 3 and sys.argv[3] == "-h":
-        parser.print_help()
-        sys.exit(0)
-
+    parser.add_argument('--help', '-h', action='help')
     return parser
 
 
