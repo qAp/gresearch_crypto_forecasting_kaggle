@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     df = unstack_train_asset_id(train)
 
-    datetime = pd.to_datetime(df['timestemp'], unit='s')
+    datetime = pd.to_datetime(df['timestamp'], unit='s')
     datetime = datetime.apply(lambda x: str(x))
     datetime = datetime.str[:-3]  # "%Y-%m-%d %H:%M"
     df['Datetime'] = datetime.copy()
