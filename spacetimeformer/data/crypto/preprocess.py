@@ -33,6 +33,13 @@ if __name__ == '__main__':
     train.to_feather('/kaggle/working/train.feather')
 
     df = unstack_train_asset_id(train)
+
+    datetime = pd.to_datetime(df['timestemp'], unit='s')
+    datetime = datetime.apply(lambda x: str(x))
+    datetime = datetime.str[:-3]  # "%Y-%m-%d %H:%M"
+    df['Datetime'] = datetime.copy()
+    df.drop('timestamp', axis=1, inplace=True)
+
     fn = '/kaggle/working/train_tindex.feather'
     df.to_feather(fn)
 
