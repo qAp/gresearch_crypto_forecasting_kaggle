@@ -21,6 +21,8 @@ def unstack_train_asset_id(df):
     new_columns = [f'{feature}_{asset_id}' for feature, asset_id in df.columns.values]
     df.columns = new_columns
     df.reset_index(inplace=True)
+
+    assert df['timestamp'].nunique() == len(df)
     return df
 
 
