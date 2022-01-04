@@ -17,7 +17,7 @@ def unstack_train_asset_id(df):
             Each row should be a unique timestamp.
             Columns are '{feature}_{asset_id}'.
     '''
-    df = train.pivot(index='timestamp', columns='Asset_ID')
+    df = df.pivot(index='timestamp', columns='Asset_ID')
     new_columns = [f'{feature}_{asset_id}' for feature, asset_id in df.columns.values]
     df.columns = new_columns
     df.reset_index(inplace=True)
