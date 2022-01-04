@@ -18,7 +18,7 @@ class CSVTimeSeries:
         self,
         data_path: str,
         target_cols: List[str],
-        read_csv_kwargs={},
+        read_kwargs={},
         val_split: float = 0.2,
         test_split: float = 0.15,
     ):
@@ -26,10 +26,10 @@ class CSVTimeSeries:
         assert os.path.exists(self.data_path)
 
         # read the file and do some datetime conversions
-        raw_df = pd.read_csv(
-            self.data_path,
-            **read_csv_kwargs,
-        )
+        if data_path.endswith('.feather'):
+            raw_df = pd.read_feather(data_path, **read_kwargs)
+        else:
+            raw_df = pd.read_csv(self.data_path, **read_kwargs)
 
         time_df = pd.to_datetime(raw_df["Datetime"], format="%Y-%m-%d %H:%M")
         df = stf.data.timefeatures.time_features(time_df, raw_df)
