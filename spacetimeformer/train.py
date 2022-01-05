@@ -101,7 +101,7 @@ def create_model(config):
         y_dim = 20
     elif config.dset == 'crypto':
         x_dim = 6
-        y_dim = 6
+        y_dim = 14
 
     assert x_dim is not None
     assert y_dim is not None
