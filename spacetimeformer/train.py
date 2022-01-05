@@ -4,6 +4,7 @@ import sys
 import warnings
 
 import pytorch_lightning as pl
+from spacetimeformer.data.crypto.config import DIR_PREPROCESS
 import torch
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -247,10 +248,14 @@ def create_dset(config):
             if data_path == "auto":
                 data_path = "./data/temperature-v1.csv"
             target_cols = ["ABI", "AMA", "ACT", "ALB", "JFK", "LGA"]
+            read_kwargs = {}
+
         elif config.dset == "solar_energy":
             if data_path == "auto":
                 data_path = "./data/solar_AL_converted.csv"
             target_cols = [str(i) for i in range(137)]
+            read_kwargs = {}
+
         elif "toy" in config.dset:
             if data_path == "auto":
                 if config.dset == "toy1":
@@ -260,6 +265,8 @@ def create_dset(config):
                 else:
                     raise ValueError(f"Unrecognized toy dataset {config.dset}")
             target_cols = [f"D{i}" for i in range(1, 21)]
+            read_kwargs = {}
+
         elif config.dset == "exchange":
             if data_path == "auto":
                 data_path = "./data/exchange_rate_converted.csv"
@@ -273,10 +280,21 @@ def create_dset(config):
                 "New Zealand",
                 "Singapore",
             ]
+            read_kwargs = {}
+
+        elif config.dset == 'crypto':
+            from spacetimeformer.data.crypto.config import (DIR_PREPROCESS, 
+                                                            ASSET_IDS)
+            if data_path == 'auto':
+                data_path = f'{DIR_PREPROCESS}/train_tindex.feather'
+            target_cols = [f'Target_{id}' for id in ASSET_IDS]
+            read_kwargs={'columns': ['Datetime'] + target_cols}
+
         dset = stf.data.CSVTimeSeries(
             data_path=data_path,
             target_cols=target_cols,
-        )
+            read_kwargs=read_kwargs)
+
         DATA_MODULE = stf.data.DataModule(
             datasetCls=stf.data.CSVTorchDset,
             dataset_kwargs={
