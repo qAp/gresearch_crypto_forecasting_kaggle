@@ -99,6 +99,9 @@ def create_model(config):
     elif config.dset == "toy2":
         x_dim = 6
         y_dim = 20
+    elif config.dset == 'crypto':
+        x_dim = 6
+        y_dim = 6
 
     assert x_dim is not None
     assert y_dim is not None
