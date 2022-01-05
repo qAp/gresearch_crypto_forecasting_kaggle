@@ -19,6 +19,7 @@ class CSVTimeSeries:
         data_path: str,
         target_cols: List[str],
         read_kwargs={},
+        fillna=None,
         val_split: float = 0.2,
         test_split: float = 0.15,
     ):
@@ -36,6 +37,9 @@ class CSVTimeSeries:
 
         assert (df["Datetime"] > pd.Timestamp.min).all()
         assert (df["Datetime"] < pd.Timestamp.max).all()
+
+        if fillna is not None:
+            df.fillna(value=fillna, inplace=True)
 
         # Train/Val/Test Split using holdout approach #
 
