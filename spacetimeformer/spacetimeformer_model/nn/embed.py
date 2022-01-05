@@ -37,6 +37,7 @@ class SpacetimeformerEmbedding(nn.Module):
         self.y_emb = nn.Linear(y_emb_inp_dim, d_model)
 
         if self.method == "spatio-temporal":
+            print(f'__init__ d_y {d_y}')
             self.var_emb = nn.Embedding(num_embeddings=d_y, embedding_dim=d_model)
 
         self.start_token_len = start_token_len
@@ -121,7 +122,7 @@ class SpacetimeformerEmbedding(nn.Module):
 
     def parallel_spatio_temporal_embed(self, y, x, is_encoder=True):
         bs, length, d_y = y.shape
-
+        print(f'parallel_spatio_temporal_embed d_y {d_y}')
         # val  + time embedding
         y = torch.cat(y.chunk(d_y, dim=-1), dim=1)
         local_pos = (
