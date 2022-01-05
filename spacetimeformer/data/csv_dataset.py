@@ -38,9 +38,6 @@ class CSVTimeSeries:
         assert (df["Datetime"] > pd.Timestamp.min).all()
         assert (df["Datetime"] < pd.Timestamp.max).all()
 
-        if fillna is not None:
-            df.fillna(value=fillna, inplace=True)
-
         # Train/Val/Test Split using holdout approach #
 
         def mask_intervals(mask, intervals, cond):
@@ -85,6 +82,11 @@ class CSVTimeSeries:
         self._train_data = self.apply_scaling(df[train_mask])
         self._val_data = self.apply_scaling(df[val_mask])
         self._test_data = self.apply_scaling(df[test_mask])
+
+        if fillna is not None:
+            self._train_data.fillna(fillna, inplace=True)
+            self._val_data.fillna(fillna, inplace=True)
+            self._test_data.fillna(fillna, inplace=True)
 
     def get_slice(self, split, start, stop, skip):
         assert split in ["train", "val", "test"]
