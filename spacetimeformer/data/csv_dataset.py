@@ -157,7 +157,7 @@ class CSVTorchDset(Dataset):
             for i in range(
                 0,
                 self.series.length(split)
-                + time_resolution * (-target_points - context_points),
+                + time_resolution * (-target_points - context_points) + 1,
             )
         ]
         random.shuffle(self._slice_start_points)
