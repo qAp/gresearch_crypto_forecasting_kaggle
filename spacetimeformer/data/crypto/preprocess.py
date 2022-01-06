@@ -4,43 +4,22 @@ import numpy as np
 import pandas as pd
 
 from spacetimeformer.data.crypto.config import DIR_BASE
+from spacetimeformer.data.crypto.utils import unstack_assetid
 
 
+train = pd.read_csv(f'{DIR_BASE}/train.csv')
 
-def unstack_train_asset_id(df):
-    '''
-    Args:
-        df (pd.DataFrame): Data from competition train.csv.
-            
-    Returns:
-        df (pd.DataFrame): Asset IDs are in separate columns. 
-            Each row should be a unique timestamp.
-            Columns are '{feature}_{asset_id}'.
-    '''
-    df = df.pivot(index='timestamp', columns='Asset_ID')
-    new_columns = [f'{feature}_{asset_id}' for feature, asset_id in df.columns.values]
-    df.columns = new_columns
-    df.reset_index(inplace=True)
+train.to_feather('/kaggle/working/train.feather')
 
-    assert df['timestamp'].nunique() == len(df)
-    return df
+df = unstack_assetid(train)
 
+dt = pd.to_datetime(df['timestamp'], unit='s')
+dt = dt.apply(lambda x: str(x))
+dt = dt.str[:-3]  # "%Y-%m-%d %H:%M"
+df['Datetime'] = dt.copy()
+df.drop('timestamp', axis=1, inplace=True)
 
-if __name__ == '__main__':
-
-    train = pd.read_csv(f'{DIR_BASE}/train.csv')
-
-    train.to_feather('/kaggle/working/train.feather')
-
-    df = unstack_train_asset_id(train)
-    
-    dt = pd.to_datetime(df['timestamp'], unit='s')
-    dt = dt.apply(lambda x: str(x))
-    dt = dt.str[:-3]  # "%Y-%m-%d %H:%M"
-    df['Datetime'] = dt.copy()
-    df.drop('timestamp', axis=1, inplace=True)
-
-    fn = '/kaggle/working/train_tindex.feather'
-    df.to_feather(fn)
+fn = '/kaggle/working/train_tindex.feather'
+df.to_feather(fn)
 
 
