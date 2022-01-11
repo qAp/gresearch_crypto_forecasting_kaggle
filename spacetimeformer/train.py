@@ -335,7 +335,7 @@ def create_dset(config):
 
 def create_callbacks(config):
     saving = pl.callbacks.ModelCheckpoint(
-        dirpath=f"./data/stf_model_checkpoints/{config.run_name}_{''.join([str(random.randint(0,9)) for _ in range(9)])}",
+        dirpath=f"/kaggle/working/stf_model_checkpoints/{config.run_name}_{''.join([str(random.randint(0,9)) for _ in range(9)])}",
         monitor="val/mse",
         filename=f"{config.run_name}" + "{epoch:02d}-{val/loss:.2f}",
         save_top_k=1,
@@ -385,7 +385,7 @@ def main(args):
         experiment = wandb.init(
             project=project,
             config=args,
-            dir="./data/stf_LOG_DIR",
+            dir="/kaggle/working/stf_LOG_DIR",
             reinit=True,
         )
         config = wandb.config
@@ -430,7 +430,7 @@ def main(args):
     # Logging
     if config.wandb:
         logger = pl.loggers.WandbLogger(
-            experiment=experiment, save_dir="./data/stf_LOG_DIR"
+            experiment=experiment, save_dir="/kaggle/working/stf_LOG_DIR"
         )
         logger.log_hyperparams(config)
 
