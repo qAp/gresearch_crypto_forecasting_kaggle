@@ -378,14 +378,12 @@ def main(args):
         by entering your org and project names
         in the variables below.
         """
-        project = None  # wandb project name
-        entity = None  # wandb organization
+        project = 'gresearch'  # wandb project name
         assert (
-            project is not None and entity is not None
+            project is not None
         ), "Please edit train.py with your wandb account information."
         experiment = wandb.init(
             project=project,
-            entity=entity,
             config=args,
             dir="./data/stf_LOG_DIR",
             reinit=True,
