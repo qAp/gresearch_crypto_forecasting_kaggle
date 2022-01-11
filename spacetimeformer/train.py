@@ -379,13 +379,19 @@ def main(args):
         in the variables below.
         """
         project = 'gresearch'  # wandb project name
+        wandb_dir = '/kaggle/working/stf_LOG_DIR'
+
+
         assert (
             project is not None
         ), "Please edit train.py with your wandb account information."
+
+        os.makedirs(wandb_dir, exist_ok=True)
+
         experiment = wandb.init(
             project=project,
             config=args,
-            dir="/kaggle/working/stf_LOG_DIR",
+            dir=wandb_dir,
             reinit=True,
         )
         config = wandb.config
@@ -429,9 +435,8 @@ def main(args):
 
     # Logging
     if config.wandb:
-        logger = pl.loggers.WandbLogger(
-            experiment=experiment, save_dir="/kaggle/working/stf_LOG_DIR"
-        )
+        logger = pl.loggers.WandbLogger(experiment=experiment, 
+                                        save_dir=wandb_dir)
         logger.log_hyperparams(config)
 
     trainer = pl.Trainer(
