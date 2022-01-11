@@ -34,6 +34,10 @@ srs = df.loc[is_train, 'VWAP_10']
 srs = srs[(- np.inf < srs) & (srs < np.inf)]
 stats_train.loc[:, 'VWAP_10'] = srs.describe()
 
-stats_train.to_csv('/kaggle/working/stats_train.csv', index=False)
+(
+    stats_train
+    .reset_index(drop=True)
+    .to_csv('/kaggle/working/stats_train.csv', index=False)
+    )
 
 
