@@ -436,6 +436,8 @@ def main(args):
         )
         logger.log_hyperparams(config)
 
+    print(config.gpus)
+    
     trainer = pl.Trainer(
         gpus=config.gpus,
         callbacks=callbacks,
