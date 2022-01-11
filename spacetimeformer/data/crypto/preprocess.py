@@ -36,7 +36,7 @@ stats_train.loc[:, 'VWAP_10'] = srs.describe()
 
 (
     stats_train
-    .reset_index(drop=True)
+    .reset_index()
     .to_csv('/kaggle/working/stats_train.csv', index=False)
     )
 
