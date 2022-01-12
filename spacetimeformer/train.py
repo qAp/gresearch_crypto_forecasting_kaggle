@@ -63,7 +63,6 @@ def create_parser():
     parser.add_argument("--plot", action="store_true")
     parser.add_argument("--attn_plot", action="store_true")
     parser.add_argument("--debug", action="store_true")
-    parser.add_argument("--run_name", type=str, required=True)
     parser.add_argument("--accumulate", type=int, default=1)
     parser.add_argument(
         "--trials", type=int, default=1, help="How many consecutive trials to run"
@@ -335,9 +334,9 @@ def create_dset(config):
 
 def create_callbacks(config):
     saving = pl.callbacks.ModelCheckpoint(
-        dirpath=f"/kaggle/working/stf_model_checkpoints/{config.run_name}_{''.join([str(random.randint(0,9)) for _ in range(9)])}",
+        dirpath="/kaggle/working/stf_model_checkpoints",
         monitor="val/mse",
-        filename=f"{config.run_name}" + "{epoch:02d}-{val/loss:.2f}",
+        filename="{epoch:02d}-{val/loss:.2f}",
         save_top_k=1,
     )
     callbacks = [saving]
@@ -395,7 +394,6 @@ def main(args):
             reinit=True,
         )
         config = wandb.config
-        wandb.run.name = args.run_name
         wandb.run.save()
     else:
         config = args
