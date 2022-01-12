@@ -337,7 +337,7 @@ def create_callbacks(config):
         dirpath="/kaggle/working/stf_model_checkpoints",
         monitor="val/mse",
         auto_insert_metric_name=False,
-        filename="epoch{epoch:02d}-val_loss{val/loss:.2f}",
+        filename="epoch{epoch:02d}-val_loss{val/loss:.3f}-val_mse{val/mse:.3f}",
         save_top_k=1,
     )
     callbacks = [saving]
