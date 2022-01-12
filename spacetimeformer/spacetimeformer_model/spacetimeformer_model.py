@@ -233,7 +233,7 @@ class Spacetimeformer_Forecaster(stf.Forecaster):
         parser.add_argument(
             "--start_token_len",
             type=int,
-            required=True,
+            default=8,
             help="Length of decoder start token. Adds this many of the final context points to the start of the target sequence.",
         )
         parser.add_argument(
