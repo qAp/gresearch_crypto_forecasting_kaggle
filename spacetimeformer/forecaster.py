@@ -87,6 +87,7 @@ class Forecaster(pl.LightningModule, ABC):
         forward_kwargs: dict = {},
     ) -> Tuple[torch.Tensor]:
         x_c, y_c, x_t, y_t = batch
+        print(x_c.shape, y_c.shape, x_t.shape, y_t.shape)
         outputs, *_ = self(x_c, y_c, x_t, y_t, **forward_kwargs)
 
         loss, mask = self.forecasting_loss(
