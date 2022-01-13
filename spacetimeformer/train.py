@@ -407,9 +407,6 @@ def main(args):
     # Dset
     data_module, inv_scaler, null_val, x_dim, y_dim = create_dset(config)
 
-    x_c, y_c, x_t, y_t = next(iter(data_module.val_dataloader()))
-    print(x_c.shape, y_c.shape, x_t.shape, y_t.shape)
-
     # Model
     forecaster = create_model(config, x_dim, y_dim)    
     forecaster.set_inv_scaler(inv_scaler)
