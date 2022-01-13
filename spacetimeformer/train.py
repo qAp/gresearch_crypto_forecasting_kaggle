@@ -267,7 +267,7 @@ def create_dset(config):
                                 val_split, test_split, NULL_VAL)
 
         DATA_MODULE = stf.data.DataModule(
-            datasetCls=stf.CryptoDataset,
+            datasetCls=CryptoDataset,
             dataset_kwargs={
                 "csv_time_series": dset,
                 "context_points": config.context_points,
