@@ -50,8 +50,6 @@ class CryptoTimeSeries(CSVTimeSeries):
                 ] = cond
             return mask
 
-        print('test_split', test_split)
-        print('df', df.head())
         test_cutoff = len(df) - round(test_split * len(df))
         val_cutoff = test_cutoff - round(val_split * len(df))
 
