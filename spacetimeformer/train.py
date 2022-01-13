@@ -255,7 +255,7 @@ def create_dset(config):
             data_path = config.data_path
 
         target_cols = [f'Target_{id}' for id in ASSET_IDS]
-        feature_cols = None
+        feature_cols = ['Close_10']
             # f'{feature}_{id}' for id in ASSET_IDS 
             # for feature in FEATURES if feature in ('Close', 'VWAP')]
 
