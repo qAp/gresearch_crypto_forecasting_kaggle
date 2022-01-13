@@ -155,6 +155,7 @@ class Spacetimeformer_Forecaster(stf.Forecaster):
 
     def compute_loss(self, batch, time_mask=None, forward_kwargs={}):
         x_c, y_c, x_t, y_t = batch
+        print(x_c.shape, y_c.shape, x_t.shape, y_t.shape)
         outputs, (logits, labels) = self(x_c, y_c, x_t, y_t, **forward_kwargs)
 
         forecast_loss, mask = self.forecasting_loss(
