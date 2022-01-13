@@ -72,8 +72,7 @@ def create_parser():
     return parser
 
 
-def create_model(config):
-    x_dim, y_dim = None, None
+def create_model(config, x_dim=None, y_dim=None):
     if config.dset == "metr-la":
         x_dim = 2
         y_dim = 207
@@ -98,9 +97,6 @@ def create_model(config):
     elif config.dset == "toy2":
         x_dim = 6
         y_dim = 20
-    elif config.dset == 'crypto':
-        x_dim = 6
-        y_dim = 14
 
     assert x_dim is not None
     assert y_dim is not None
@@ -215,6 +211,8 @@ def create_model(config):
 def create_dset(config):
     INV_SCALER = lambda x: x
     NULL_VAL = None
+    x_dim = None
+    y_dim = None
 
     if config.dset == "metr-la" or config.dset == "pems-bay":
         if config.dset == "pems-bay":
@@ -247,21 +245,26 @@ def create_dset(config):
 
     elif config.dset == 'crypto':
         from spacetimeformer.data.crypto.config import (DIR_PREPROCESS, 
-                                                        ASSET_IDS)
+                                                        ASSET_IDS, FEATURES,
+                                                        TIME_FEATURES)
+        from spacetimeformer.data.crypto import CryptoTimeSeries, CryptoDataset
+
         if config.data_path == 'auto':
             data_path = f'{DIR_PREPROCESS}/train_tindex.feather'
         else:
             data_path = config.data_path
 
         target_cols = [f'Target_{id}' for id in ASSET_IDS]
-        read_kwargs={'columns': ['Datetime'] + target_cols}
+        feature_cols = [
+            f'{feature}_{id}' for id in ASSET_IDS 
+            for feature in FEATURES if feature in ('Close', 'VWAP')]
+
+        val_split=.2
+        test_split=.15,
         NULL_VAL = -999
 
-        dset = stf.data.CSVTimeSeries(
-            data_path=data_path,
-            target_cols=target_cols,
-            read_kwargs=read_kwargs,
-            fillna=NULL_VAL)
+        dset = CryptoTimeSeries(data_path, target_cols, feature_cols,
+                                val_split, test_split, NULL_VAL)
 
         DATA_MODULE = stf.data.DataModule(
             datasetCls=stf.data.CSVTorchDset,
@@ -274,6 +277,8 @@ def create_dset(config):
             workers=config.workers)
 
         INV_SCALER = dset.reverse_scaling
+        x_dim = len(TIME_FEATURES) + len(feature_cols)
+        y_dim = len(target_cols)
 
     else:
         data_path = config.data_path
@@ -329,7 +334,7 @@ def create_dset(config):
         INV_SCALER = dset.reverse_scaling
         NULL_VAL = None
 
-    return DATA_MODULE, INV_SCALER, NULL_VAL
+    return DATA_MODULE, INV_SCALER, NULL_VAL, x_dim, y_dim
 
 
 def create_callbacks(config):
@@ -399,12 +404,11 @@ def main(args):
     else:
         config = args
 
-    # Model
-    forecaster = create_model(config)
-
     # Dset
-    data_module, inv_scaler, null_val = create_dset(config)
+    data_module, inv_scaler, null_val, x_dim, y_dim = create_dset(config)
 
+    # Model
+    forecaster = create_model(config, x_dim, y_dim)    
     forecaster.set_inv_scaler(inv_scaler)
 
     # Callbacks
