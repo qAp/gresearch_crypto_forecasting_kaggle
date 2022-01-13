@@ -81,9 +81,12 @@ class CryptoTimeSeries(CSVTimeSeries):
     def _fit_scalers(self):
         self._scaler = StandardScaler()
         self._scaler.fit(self._train_data[self.target_cols].values)
-        
-        self._feature_scaler = StandardScaler()
-        self._feature_scaler.fit(self._train_data[self.feature_cols].values)
+
+        if self.feature_cols:
+            self._feature_scaler = StandardScaler()
+            self._feature_scaler.fit(self._train_data[self.feature_cols].values)
+        else:
+            self._feature_scaler = None
         
     def apply_feature_scaling(self, df):
         scaled = df.copy(deep=True)
@@ -107,9 +110,10 @@ class CryptoTimeSeries(CSVTimeSeries):
         self._val_data = self.apply_scaling(self._val_data)
         self._test_data = self.apply_scaling(self._test_data)
 
-        self._train_data = self.apply_feature_scaling(self._train_data)
-        self._val_data = self.apply_feature_scaling(self._val_data)
-        self._test_data = self.apply_feature_scaling(self._test_data)
+        if self._feature_scaler:
+            self._train_data = self.apply_feature_scaling(self._train_data)
+            self._val_data = self.apply_feature_scaling(self._val_data)
+            self._test_data = self.apply_feature_scaling(self._test_data)
         
     def _fillna(self):
         if self.null_value is not None:
