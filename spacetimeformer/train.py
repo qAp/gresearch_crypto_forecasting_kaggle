@@ -269,7 +269,7 @@ def create_dset(config):
         DATA_MODULE = stf.data.DataModule(
             datasetCls=CryptoDataset,
             dataset_kwargs={
-                "csv_time_series": dset,
+                "crypto_time_series": dset,
                 "context_points": config.context_points,
                 "target_points": config.target_points,
                 "time_resolution": config.time_resolution},
