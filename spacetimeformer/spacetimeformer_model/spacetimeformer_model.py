@@ -191,7 +191,9 @@ class Spacetimeformer_Forecaster(stf.Forecaster):
             ],
             dim=1,
         ).float()
-
+        print(batch_x.shape, batch_x_mark.shape, 
+              dec_inp.shape, batch_y_mark.shape, 
+              output_attn.shape)
         output, (logits, labels), attn = self.spacetimeformer(
             x_enc=batch_x,
             x_mark_enc=batch_x_mark,
