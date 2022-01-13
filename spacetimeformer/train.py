@@ -255,9 +255,9 @@ def create_dset(config):
             data_path = config.data_path
 
         target_cols = [f'Target_{id}' for id in ASSET_IDS]
-        feature_cols = [
-            f'{feature}_{id}' for id in ASSET_IDS 
-            for feature in FEATURES if feature in ('Close', 'VWAP')]
+        feature_cols = None
+            # f'{feature}_{id}' for id in ASSET_IDS 
+            # for feature in FEATURES if feature in ('Close', 'VWAP')]
 
         val_split = .2
         test_split = .15
