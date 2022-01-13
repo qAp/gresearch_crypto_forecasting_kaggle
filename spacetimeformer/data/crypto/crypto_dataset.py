@@ -22,7 +22,7 @@ class CryptoTimeSeries(CSVTimeSeries):
         self.test_split = test_split
         self.null_value = null_value
         
-        columns = ['timestamp', 'split'] + self.feature_cols + self.target_cols
+        columns = ['timestamp',] + self.feature_cols + self.target_cols
         raw_df = pd.read_feather(data_path, columns=columns)
         
         time_df = pd.to_datetime(raw_df['timestamp'], unit='s')
