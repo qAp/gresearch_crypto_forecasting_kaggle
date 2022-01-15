@@ -346,7 +346,7 @@ def create_callbacks(config):
         filename="epoch{epoch:02d}-val_loss{val/loss:.3f}-val_mse{val/mse:.3f}",
         save_top_k=1,
         save_last=True,
-        every_n_train_steps=1_000)
+        every_n_train_steps=500)
 
     callbacks = [saving]
 
