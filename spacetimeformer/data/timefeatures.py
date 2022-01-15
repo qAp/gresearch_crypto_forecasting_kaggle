@@ -1,12 +1,12 @@
 import pandas as pd
 
 
-def time_features(dates, main_df=None):
+def time_features(dates, min_year=None, max_year=None, main_df=None):
     if main_df is None:
         main_df = pd.DataFrame({})
     years = dates.apply(lambda row: row.year)
-    max_year = years.max()
-    min_year = years.min()
+    max_year = years.max() if max_year is None else max_year
+    min_year = years.min() if min_year is None else min_year
     main_df["Year"] = dates.apply(
         lambda row: (row.year - min_year) / max(1.0, (max_year - min_year))
     )
