@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 import spacetimeformer as stf
+from spacetimeformer.data.crypto.config import (MIN_YEAR_SCALING, 
+                                                MAX_YEAR_SCALING)
 from spacetimeformer.data import CSVTimeSeries, CSVTorchDset
 
 
@@ -26,7 +28,10 @@ class CryptoTimeSeries(CSVTimeSeries):
         raw_df = pd.read_feather(data_path, columns=columns)
         
         time_df = pd.to_datetime(raw_df['timestamp'], unit='s')
-        df = stf.data.timefeatures.time_features(time_df, raw_df)
+        df = stf.data.timefeatures.time_features(
+            time_df, 
+            min_year=MIN_YEAR_SCALING, max_year=MAX_YEAR_SCALING, 
+            main_df=raw_df)
 
         df.replace(np.inf, np.nan, inplace=True)
         df.replace(-np.inf, np.nan, inplace=True)
