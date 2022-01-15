@@ -161,7 +161,8 @@ class Forecaster(pl.LightningModule, ABC):
 
     def _log_stats(self, section, outs):
         for key in outs.keys():
-            self.log(f"{section}/{key}", outs[key].mean(), sync_dist=True)
+            self.log(f"{section}/{key}", outs[key].mean(), 
+                     sync_dist=True, on_step=True, prog_bar=True)
 
     def training_step_end(self, outs):
         self._log_stats("train", outs)
