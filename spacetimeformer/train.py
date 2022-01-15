@@ -341,9 +341,12 @@ def create_callbacks(config):
     saving = pl.callbacks.ModelCheckpoint(
         dirpath="/kaggle/working/stf_model_checkpoints",
         monitor="val/mse",
+        mode='min',
         auto_insert_metric_name=False,
         filename="epoch{epoch:02d}-val_loss{val/loss:.3f}-val_mse{val/mse:.3f}",
         save_top_k=1,
+        save_last=True,
+        every_n_train_steps=5
     )
     callbacks = [saving]
 
