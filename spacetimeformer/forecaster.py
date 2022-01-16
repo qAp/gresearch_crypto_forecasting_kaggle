@@ -159,17 +159,18 @@ class Forecaster(pl.LightningModule, ABC):
     def test_step(self, batch, batch_idx):
         return self.step(batch, train=False)
 
-    def _log_stats(self, section, outs):
+    def _log_stats(self, section, outs, on_step=True, on_epoch=False):
         for key in outs.keys():
             self.log(f"{section}/{key}", outs[key].mean(), 
-                     sync_dist=True, prog_bar=True)
+                     sync_dist=True, 
+                     on_step=on_step, on_epoch=on_epoch, prog_bar=True)
 
     def training_step_end(self, outs):
-        self._log_stats("train", outs)
+        self._log_stats("train", outs, on_step=True, on_epoch=False)
         return {"loss": outs["loss"].mean()}
 
     def validation_step_end(self, outs):
-        self._log_stats("val", outs)
+        self._log_stats("val", outs, on_step=False, on_epoch=True)
         return {"loss": outs["loss"]}
 
     def test_step_end(self, outs):
