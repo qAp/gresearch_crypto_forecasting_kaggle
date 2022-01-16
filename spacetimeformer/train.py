@@ -68,6 +68,9 @@ def create_parser():
         "--trials", type=int, default=1, help="How many consecutive trials to run"
     )
 
+    parser.add_argument('--overfit_batches', type=int, default=20)
+    parser.add_argument('--val_check_interval', type=int, default=5)
+
     parser.add_argument('--help', '-h', action='help')
     return parser
 
@@ -453,11 +456,11 @@ def main(args):
         log_gpu_memory=True,
         gradient_clip_val=config.grad_clip_norm,
         gradient_clip_algorithm="norm",
-        overfit_batches=20 if config.debug else 0,
+        overfit_batches=config.overfit_batches,
         # track_grad_norm=2,
         accumulate_grad_batches=args.accumulate,
         sync_batchnorm=True,
-        val_check_interval=0.25 if args.dset == "asos" else 1.0,
+        val_check_interval=config.val_check_interval,
     )
 
     # Train
