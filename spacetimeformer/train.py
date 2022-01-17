@@ -67,10 +67,12 @@ def create_parser():
     parser.add_argument(
         "--trials", type=int, default=1, help="How many consecutive trials to run"
     )
-
+    # Trainer args
     parser.add_argument('--overfit_batches', type=int, default=20)
     parser.add_argument('--val_check_interval', type=int, default=5)
     parser.add_argument('--max_epochs', type=int, default=200)
+
+    parser.add_argument('--save_every_n_train_steps', type=int, default=5)
 
     parser.add_argument('--help', '-h', action='help')
     return parser
@@ -350,7 +352,7 @@ def create_callbacks(config):
         filename="epoch{epoch:02d}-val_loss{val/loss:.3f}-val_mse{val/mse:.3f}",
         save_top_k=1,
         save_last=True,
-        every_n_train_steps=500)
+        every_n_train_steps=config.save_every_n_train_steps)
 
     callbacks = [saving]
 
