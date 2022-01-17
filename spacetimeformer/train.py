@@ -70,6 +70,7 @@ def create_parser():
 
     parser.add_argument('--overfit_batches', type=int, default=20)
     parser.add_argument('--val_check_interval', type=int, default=5)
+    parser.add_argument('--max_epochs', type=int, default=200)
 
     parser.add_argument('--help', '-h', action='help')
     return parser
@@ -461,6 +462,7 @@ def main(args):
         accumulate_grad_batches=args.accumulate,
         sync_batchnorm=True,
         val_check_interval=config.val_check_interval,
+        max_epochs=config.max_epochs,
     )
 
     # Train
