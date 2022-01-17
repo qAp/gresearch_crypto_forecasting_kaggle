@@ -71,7 +71,7 @@ def create_parser():
     parser.add_argument('--overfit_batches', type=int, default=0)
     parser.add_argument('--val_check_interval', type=int, default=1000)
     parser.add_argument('--max_epochs', type=int, default=200)
-    parser.add_argument('--resume_from_checkpoint', type=str, default='last.pth')
+    parser.add_argument('--resume_from_checkpoint', type=str, default=None)
 
     parser.add_argument('--save_every_n_train_steps', type=int, default=1000)
 
