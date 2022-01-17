@@ -74,7 +74,10 @@ def create_parser():
     parser.add_argument('--max_epochs', type=int, default=200)
     parser.add_argument('--resume_from_checkpoint', type=str, default=None)
 
+    # ModelCheckpoint
     parser.add_argument('--save_every_n_train_steps', type=int, default=None)
+    parser.add_argument('--save_every_n_val_steps', type=int, default=None)
+
 
     parser.add_argument('--help', '-h', action='help')
     return parser
@@ -371,7 +374,8 @@ def create_callbacks(config):
         filename="epoch{epoch:02d}-step{step:d}-val_loss{val/loss:.3f}",
         save_top_k=1,
         save_last=True,
-        every_n_train_steps=config.save_every_n_train_steps)
+        every_n_train_steps=config.save_every_n_train_steps,
+        every_n_val_epochs=config.save_every_n_val_epochs)
 
     callbacks = [saving]
 
