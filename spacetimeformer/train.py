@@ -29,6 +29,7 @@ def create_parser():
     parser = ArgumentParser(add_help=False)
     parser.add_argument("--model", type=str, default='spacetimeformer')
     parser.add_argument("--dset", type=str, default='asos')
+    parser.add_argument('--load_from_checkpoint', type=str, default=None)
 
     args, _ = parser.parse_known_args()
 
@@ -166,7 +167,8 @@ def create_model(config, x_dim=None, y_dim=None):
             linear_window=config.linear_window,
         )
     elif config.model == "spacetimeformer":
-        forecaster = stf.spacetimeformer_model.Spacetimeformer_Forecaster(
+
+        kwargs = dict(
             d_y=y_dim,
             d_x=x_dim,
             start_token_len=config.start_token_len,
@@ -201,8 +203,24 @@ def create_model(config, x_dim=None, y_dim=None):
             loss=config.loss,
             linear_window=config.linear_window,
             class_loss_imp=config.class_loss_imp,
-            time_emb_dim=config.time_emb_dim,
-        )
+            time_emb_dim=config.time_emb_dim)
+
+        if config.load_from_checkpoint:
+            forecaster = (
+                stf
+                .spacetimeformer_model
+                .Spacetimeformer_Forecaster
+                .load_from_checkpoint(
+                    checkpoint_path=config.load_from_checkpoint, **kwargs)
+                    )
+        else:
+            forecaster = (
+                stf
+                .spacetimeformer_model
+                .Spacetimeformer_Forecaster(**kwargs)
+            )
+            
+
     elif config.model == "linear":
         forecaster = stf.linear_model.Linear_Forecaster(
             context_points=config.context_points,
