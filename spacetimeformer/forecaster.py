@@ -174,7 +174,7 @@ class Forecaster(pl.LightningModule, ABC):
         return {"loss": outs["loss"]}
 
     def test_step_end(self, outs):
-        self._log_stats("test", outs)
+        self._log_stats("test", outs, on_step=False, on_epoch=True)
         return {"loss": outs["loss"]}
 
     def predict_step(self, batch, batch_idx):
