@@ -349,7 +349,7 @@ def create_callbacks(config):
         monitor="val/mse",
         mode='min',
         auto_insert_metric_name=False,
-        filename="epoch{epoch:02d}-val_loss{val/loss:.3f}-val_mse{val/mse:.3f}",
+        filename="epoch{epoch:02d}-step{step:d}-val_loss{val/loss:.3f}-val_mse{val/mse:.3f}",
         save_top_k=1,
         save_last=True,
         every_n_train_steps=config.save_every_n_train_steps)
