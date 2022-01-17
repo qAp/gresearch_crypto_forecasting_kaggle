@@ -455,7 +455,6 @@ def main(args):
         gpus=config.gpus,
         callbacks=callbacks,
         logger=logger if args.wandb else None,
-        accelerator="dp",
         log_gpu_memory=True,
         gradient_clip_val=config.grad_clip_norm,
         gradient_clip_algorithm="norm",
