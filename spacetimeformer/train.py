@@ -76,7 +76,7 @@ def create_parser():
 
     # ModelCheckpoint
     parser.add_argument('--save_every_n_train_steps', type=int, default=None)
-    parser.add_argument('--save_every_n_val_steps', type=int, default=None)
+    parser.add_argument('--save_every_n_val_epochs', type=int, default=None)
 
 
     parser.add_argument('--help', '-h', action='help')
