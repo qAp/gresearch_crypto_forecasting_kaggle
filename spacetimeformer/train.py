@@ -69,8 +69,8 @@ def create_parser():
         "--trials", type=int, default=1, help="How many consecutive trials to run"
     )
     # Trainer args
-    parser.add_argument('--overfit_batches', type=int, default=0)
-    parser.add_argument('--val_check_interval', type=int, default=None)
+    parser.add_argument('--overfit_batches', type=float, default=0)
+    parser.add_argument('--val_check_interval', type=float, default=None)
     parser.add_argument('--max_epochs', type=int, default=200)
     parser.add_argument('--resume_from_checkpoint', type=str, default=None)
 
