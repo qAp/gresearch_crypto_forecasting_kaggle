@@ -19,15 +19,15 @@ class Time2Vec(nn.Module):
     def forward(self, x):
         if self.enabled:
             # size of x = [bs, sample, input_dim]
-            x = torch.diag_embed(x)
-            x_affine = torch.matmul(x, self.embed_weight) + self.embed_bias
+            x = torch.diag_embed(x)  # (N, L, input_dim, input_dim)
+            x_affine = torch.matmul(x, self.embed_weight) + self.embed_bias  # (N, L, input_dim, self.embed_dim)
             # size of x_affine = [bs, sample, embed_dim]
             x_affine_0, x_affine_remain = torch.split(
                 x_affine, [1, self.embed_dim - 1], dim=-1
             )
             x_affine_remain = self.act_function(x_affine_remain)
-            x_output = torch.cat([x_affine_0, x_affine_remain], dim=-1)
-            x_output = x_output.view(x_output.size(0), x_output.size(1), -1)
+            x_output = torch.cat([x_affine_0, x_affine_remain], dim=-1)  # (N, L, input_dim, self.embed_dim)
+            x_output = x_output.view(x_output.size(0), x_output.size(1), -1)   # (N, L, input_dim * self.embed_dim)
         else:
             x_output = x
         return x_output

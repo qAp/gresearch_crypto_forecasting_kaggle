@@ -123,18 +123,20 @@ class SpacetimeformerEmbedding(nn.Module):
         bs, length, d_y = y.shape
 
         # val  + time embedding
-        y = torch.cat(y.chunk(d_y, dim=-1), dim=1)
+        y = torch.cat(y.chunk(d_y, dim=-1), dim=1)    # (N, L * d_y, 1)
         local_pos = (
             torch.arange(length).view(1, -1, 1).repeat(bs, 1, 1).to(x.device) / length
         )
-        x = torch.cat((x, local_pos), dim=-1)
+        x = torch.cat((x, local_pos), dim=-1)    # (N, L, d_x + 1)
         if not self.TIME:
             x = torch.zeros_like(x)
         if not self.VAL:
             y = torch.zeros_like(y)
+        # (N, L * d_y, time_emb_dim * d_x)
         t2v_emb = self.x_emb(x).repeat(1, d_y, 1)
+        # (N, L * d_y, 1 + time_emb_dim * d_x)
         val_time_inp = torch.cat((y, t2v_emb), dim=-1)
-        val_time_emb = self.y_emb(val_time_inp)
+        val_time_emb = self.y_emb(val_time_inp)    # (N, L * d_y, d_model)
 
         # "given" embedding
         given = torch.ones((bs, length, d_y)).long().to(x.device)
