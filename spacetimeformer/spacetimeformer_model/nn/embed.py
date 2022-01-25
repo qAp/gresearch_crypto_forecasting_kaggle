@@ -142,22 +142,22 @@ class SpacetimeformerEmbedding(nn.Module):
         given = torch.ones((bs, length, d_y)).long().to(x.device)
         if not is_encoder and self.GIVEN:
             given[:, self.start_token_len :, :] = 0
-        given = torch.cat(given.chunk(d_y, dim=-1), dim=1).squeeze(-1)
-        given_emb = self.given_emb(given)
+        given = torch.cat(given.chunk(d_y, dim=-1), dim=1).squeeze(-1)   # (N, L * d_y)
+        given_emb = self.given_emb(given)    # (N, L * d_y, d_model)
         val_time_emb += given_emb
 
         if is_encoder:
             for conv in self.downsize_convs:
-                val_time_emb = conv(val_time_emb)
+                val_time_emb = conv(val_time_emb)    # (N, L / 2 * d_y, d_model)
                 length //= 2
 
         # var embedding
-        var_idx = torch.Tensor([[i for j in range(length)] for i in range(d_y)])
-        var_idx = var_idx.long().to(x.device).view(-1).unsqueeze(0).repeat(bs, 1)
+        var_idx = torch.Tensor([[i for j in range(length)] for i in range(d_y)])    # (d_y, L)
+        var_idx = var_idx.long().to(x.device).view(-1).unsqueeze(0).repeat(bs, 1)   # (N, L * d_y)
         var_idx_true = var_idx.clone()
         if not self.SPACE:
             var_idx = torch.zeros_like(var_idx)
-        var_emb = self.var_emb(var_idx)
+        var_emb = self.var_emb(var_idx)    # (N, L * d_y, d_model)
 
         return val_time_emb, var_emb, var_idx_true
 
