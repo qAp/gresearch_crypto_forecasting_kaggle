@@ -31,6 +31,9 @@ def create_parser():
     parser.add_argument("--dset", type=str, default='asos')
     parser.add_argument('--load_from_checkpoint', type=str, default=None)
 
+    parser.add_argument('--xtra_target_cols', type=str, nargs='+', default=[], 
+                        help='Extra target columns for crypto dataset.')
+
     args, _ = parser.parse_known_args()
 
     if args.dset == "precip":
@@ -282,7 +285,7 @@ def create_dset(config):
         else:
             data_path = config.data_path
 
-        target_cols = [f'Target_{id}' for id in ASSET_IDS]
+        target_cols = [f'Target_{id}' for id in ASSET_IDS] + config.xtra_target_cols
         feature_cols = []
             # f'{feature}_{id}' for id in ASSET_IDS 
             # for feature in FEATURES if feature in ('Close', 'VWAP')]
