@@ -72,10 +72,18 @@ class CryptoPredictor:
             self._context_df = df_supp
 
     def _get_raw_df(self, test_df, sample_prediction_df):
-        test_df = unstack_assetid(test_df)
-        test_df = test_df[['timestamp', ] + self.feature_cols]
 
-        raw_df = pd.concat([self._context_df, test_df], axis=0)
+        target_df_0 = unstack_assetid(test_df)[['timestamp'] + self.feature_cols]
+
+        timestamp = (
+            target_df_0['timestamp'].item() +
+            self.args.time_resolution * np.arange(1, self.args.target_points)
+        )
+        target_df_remain = pd.DataFrame({'timestamp': timestamp})
+
+        raw_df = pd.concat(
+            [self._context_df, target_df_0, target_df_remain], axis=0)
+
         return raw_df
 
     def _preprocess_features(self, raw_df):
@@ -125,12 +133,20 @@ class CryptoPredictor:
             pr = outputs.mean
             pr = pr.cpu().numpy()
             pr = self.forecaster._inv_scaler(pr)
-            pr = pr.ravel()
 
+            i_sample, i_timestamp = 0, 0
+            pr = pr[i_sample, i_timestamp, : len(ASSET_IDS)]
         return pr
 
     def update_context(self, test_df, pr):
-        target = pd.DataFrame(pr[None, ...], columns=self.target_cols)
-        target['timestamp'] = test_df['timestamp'].unique().item()
+        xtra_target = unstack_assetid(
+            test_df)[self.args.xtra_target_cols].values.squeeze()
+        update = np.concatenate([pr, xtra_target])
+        columns = [f'Target_{id}' for id in ASSET_IDS] + self.args.xtra_target_cols
+        update = pd.DataFrame(update[None, ...], columns=columns)
+
+        update['timestamp'] = test_df['timestamp'].unique().item()
+
         self._context_df = self._context_df.iloc[1:].append(
-            target, ignore_index=True)
+            update, ignore_index=True)
+
