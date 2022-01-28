@@ -26,7 +26,7 @@ class CryptoPredictor:
 
     def _create_timeseries(self):
         data_path = f'{DIR_PREPROCESS}/train_tindex.feather'
-        target_cols = [f'Target_{id}' for id in ASSET_IDS]
+        target_cols = [f'Target_{id}' for id in ASSET_IDS] + self.args.xtra_target_cols
         feature_cols = []
 
         val_split = .2
