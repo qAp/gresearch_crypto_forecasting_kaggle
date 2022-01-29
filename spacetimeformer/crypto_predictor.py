@@ -77,7 +77,7 @@ class CryptoPredictor:
 
         timestamp = (
             target_df_0['timestamp'].item() +
-            self.args.time_resolution * np.arange(1, self.args.target_points)
+            60 * np.arange(1, self.args.target_points)
         )
         target_df_remain = pd.DataFrame({'timestamp': timestamp})
 
