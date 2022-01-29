@@ -1,5 +1,5 @@
 
-import numpy as np
+import numpy as np  
 import pandas as pd
 
 
@@ -12,21 +12,6 @@ class SimEnv:
         self.timestamps = self.df['timestamp'].unique()[:num_sample]
 
         self._row_count = 0
-
-#     def iter_test(self):
-#         for i, timestamp in enumerate(self.timestamps):
-
-#             test_df = self.df[self.df['timestamp'] == timestamp]
-#             test_df = pd.DataFrame({'Asset_ID': ASSET_IDS}).merge(test_df, how='outer')
-#             test_df['timestamp'].fillna(timestamp, inplace=True)
-
-#             row_id = i * len(ASSET_IDS) + np.arange(len(ASSET_IDS))
-#             test_df['row_id'] = row_id
-
-#             sample_prediction_df = pd.DataFrame({'row_id': row_id})
-#             sample_prediction_df['Target'] = 0
-
-#             yield test_df, sample_prediction_df
 
     def reset(self):
         self._row_count = 0
