@@ -138,14 +138,17 @@ class CryptoPredictor:
             pr = pr[i_sample, i_timestamp, : len(ASSET_IDS)]
         return pr
 
-    def update_context(self, test_df, pr):
-        xtra_target = unstack_assetid(
-            test_df)[self.args.xtra_target_cols].values.squeeze()
-        update = np.concatenate([pr, xtra_target])
-        columns = [f'Target_{id}' for id in ASSET_IDS] + self.args.xtra_target_cols
-        update = pd.DataFrame(update[None, ...], columns=columns)
 
-        update['timestamp'] = test_df['timestamp'].unique().item()
+    def update_context(self, test_df, pr):
+
+        update = {f'Target_{id}': [v] for id, v in zip(ASSET_IDS, pr)}
+
+        test_df = unstack_assetid(test_df)
+        for col in ['timestamp'] + self.args.xtra_target_cols + self.feature_cols:
+            if col in test_df.columns:
+                update[col] = [test_df[col].item()]
+
+        update = pd.DataFrame(update)
 
         self._context_df = self._context_df.iloc[1:].append(
             update, ignore_index=True)
