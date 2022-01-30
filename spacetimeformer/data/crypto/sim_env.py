@@ -4,12 +4,18 @@ import pandas as pd
 
 
 class SimEnv:
-    def __init__(self, csv_path='train.csv', num_sample=10_000):
+    def __init__(self, csv_path='train.csv', num_sample=None):
         self.df = pd.read_csv(csv_path)
         self.df.drop('Target', axis=1, inplace=True)
-        self.num_sample = num_sample
 
-        self.timestamps = self.df['timestamp'].unique()[:num_sample]
+        timestamps = self.df['timestamp'].unique()
+
+        if num_sample is None:
+            val_split, test_split = .2, .15
+            num_sample = int((val_split + test_split) * len(timestamps))
+
+        self.num_sample = num_sample
+        self.timestamps = timestamps[-num_sample:]
 
         self._row_count = 0
 
