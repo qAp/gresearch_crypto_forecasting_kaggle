@@ -40,7 +40,8 @@ class DecoderLayer(nn.Module):
         self.post_norm = post_norm
 
     def forward(self, x, cross, x_mask=None, cross_mask=None):
-
+        # x.shape (N, L * d_y, d_model)
+        
         # see https://arxiv.org/abs/2002.04745 Figure 1
         if self.post_norm:
             if self.local_self_attention:
@@ -110,6 +111,7 @@ class DecoderLayer(nn.Module):
             x_norm = self.dropout(self.conv2(x_norm).transpose(-1, 1))
             output = x + x_norm
 
+            # output.shape (N, L * d_y, d_model)
         return output
 
 
@@ -133,4 +135,4 @@ class Decoder(nn.Module):
         if self.norm is not None:
             x = self.norm(x)
 
-        return x
+        return x  # (N, L * d_y, d_model)

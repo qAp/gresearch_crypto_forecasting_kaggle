@@ -165,14 +165,14 @@ class Spacetimeformer(nn.Module):
         self.d_y = d_y
 
     def _fold_spatio_temporal(self, dec_out):
-        dec_out = dec_out.chunk(self.d_y, dim=1)
+        dec_out = dec_out.chunk(self.d_y, dim=1)   # [(N, L, 2), (N, L, 2), ..., ]
         means = []
         log_stds = []
         for y in dec_out:
-            mean, log_std = y.chunk(2, dim=-1)
+            mean, log_std = y.chunk(2, dim=-1)    # mean.shape (N, L, 1)
             means.append(mean)
             log_stds.append(log_std)
-        means = torch.cat(means, dim=-1)[:, self.start_token_len :, :]
+        means = torch.cat(means, dim=-1)[:, self.start_token_len :, :]  # (N, L, d_y)
         log_stds = torch.cat(log_stds, dim=-1)[:, self.start_token_len :, :]
         return means, log_stds
 
@@ -209,7 +209,7 @@ class Spacetimeformer(nn.Module):
             cross_mask=dec_enc_mask,
         )
 
-        forecast_out = self.forecaster(dec_out)
+        forecast_out = self.forecaster(dec_out)  # (N, L * d_y, 2)
 
         if self.embed_method == "spatio-temporal":
             means, log_stds = self._fold_spatio_temporal(forecast_out)
